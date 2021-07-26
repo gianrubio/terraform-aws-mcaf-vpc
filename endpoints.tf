@@ -76,12 +76,12 @@ resource "aws_vpc_endpoint" "s3" {
 
 # Resources for the ECR VPC interface endpoint
 data "aws_vpc_endpoint_service" "ecr_endpoint" {
-  count   = var.ecr_endpoint != null ? 1 : 0
+  count   = var.private_ecr_endpoint != null ? 1 : 0
   service = "ecr"
 }
 
 resource "aws_vpc_endpoint" "ecr_endpoint" {
-  count               = var.ec_endpoint != null ? 1 : 0
+  count               = var.private_ecr_endpoint != null ? 1 : 0
   private_dns_enabled = var.ecr_endpoint.private_dns_enabled
   security_group_ids  = var.ecr_endpoint.security_group_ids
   service_name        = data.aws_vpc_endpoint_service.ecr_endpoint[0].service_name
