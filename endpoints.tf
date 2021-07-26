@@ -84,7 +84,7 @@ resource "aws_vpc_endpoint" "ecr_endpoint" {
   count               = var.private_ecr_endpoint != null ? 1 : 0
   private_dns_enabled = var.ecr_endpoint.private_dns_enabled
   security_group_ids  = var.ecr_endpoint.security_group_ids
-  service_name        = data.aws_vpc_endpoint_service.ecr_endpoint[0].service_name
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
   subnet_ids          = var.ecr_endpoint.subnet_ids
   vpc_endpoint_type   = "Interface"
   vpc_id              = aws_vpc.default.id
