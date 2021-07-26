@@ -74,6 +74,23 @@ resource "aws_vpc_endpoint" "s3" {
   tags              = merge(var.tags, { "Name" = "${var.prepend_resource_type ? "endpoint-" : ""}s3-${var.name}" })
 }
 
+# Resources for the ECR VPC interface endpoint
+data "aws_vpc_endpoint_service" "ecr_endpoint" {
+  count   = var.ecr_endpoint != null ? 1 : 0
+  service = "ecr"
+}
+
+resource "aws_vpc_endpoint" "ecr_endpoint" {
+  count               = var.ec_endpoint != null ? 1 : 0
+  private_dns_enabled = var.ecr_endpoint.private_dns_enabled
+  security_group_ids  = var.ecr_endpoint.security_group_ids
+  service_name        = data.aws_vpc_endpoint_service.ecr_endpoint[0].service_name
+  subnet_ids          = var.ecr_endpoint.subnet_ids
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = aws_vpc.default.id
+  tags                = merge(var.tags, { "Name" = "${var.prepend_resource_type ? "endpoint-" : ""}ecr-${var.name}" })
+}
+
 # Resources for the SSM VPC interface endpoint
 data "aws_vpc_endpoint_service" "ssm_endpoint" {
   count   = var.ssm_endpoint != null ? 1 : 0
