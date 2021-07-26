@@ -141,7 +141,7 @@ variable "private_dynamodb_endpoint" {
   description = "Deploy a DynamoDB endpoint for your private subnets"
 }
 
-variable "private_ecr_endpoint" {
+variable "private_ecr_dkr_endpoint" {
   default     = false
   description = "Deploy a ECR endpoint for your private subnets"
 }
