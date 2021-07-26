@@ -74,6 +74,34 @@ resource "aws_vpc_endpoint" "s3" {
   tags              = merge(var.tags, { "Name" = "${var.prepend_resource_type ? "endpoint-" : ""}s3-${var.name}" })
 }
 
+# Resources for the ECR VPC interface endpoint
+data "aws_vpc_endpoint_service" "ecr_api_endpoint" {
+  count   = var.private_ecr_dkr_endpoint != null ? 1 : 0
+  service = "ecr"
+}
+
+resource "aws_vpc_endpoint" "ecr_api_endpoint" {
+  count               = var.private_ecr_dkr_endpoint != null ? 1 : 0
+  private_dns_enabled = var.ecr_api_endpoint.private_dns_enabled
+  security_group_ids  = var.ecr_api_endpoint.security_group_ids
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
+  subnet_ids          = var.ecr_api_endpoint.subnet_ids
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = aws_vpc.default.id
+  tags                = merge(var.tags, { "Name" = "${var.prepend_resource_type ? "endpoint-" : ""}ecr-${var.name}" })
+}
+
+resource "aws_vpc_endpoint" "ecr_dkr_endpoint" {
+  count               = var.private_ecr_dkr_endpoint != null ? 1 : 0
+  private_dns_enabled = var.ecr_api_endpoint.private_dns_enabled
+  security_group_ids  = var.ecr_api_endpoint.security_group_ids
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
+  subnet_ids          = var.ecr_api_endpoint.subnet_ids
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = aws_vpc.default.id
+  tags                = merge(var.tags, { "Name" = "${var.prepend_resource_type ? "endpoint-" : ""}ecr-${var.name}" })
+}
+
 # Resources for the SSM VPC interface endpoint
 data "aws_vpc_endpoint_service" "ssm_endpoint" {
   count   = var.ssm_endpoint != null ? 1 : 0
