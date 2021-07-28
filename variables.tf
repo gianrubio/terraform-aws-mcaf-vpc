@@ -40,6 +40,16 @@ variable "ec2_endpoint" {
   description = "Variables to provision an EC2 endpoint to the VPC"
 }
 
+variable "ecr_endpoint" {
+  type = object({
+    private_dns_enabled = bool
+    security_group_ids  = list(string)
+    subnet_ids          = list(string)
+  })
+  default     = null
+  description = "Variables to provision an ECR endpoint to the VPC"
+}
+
 variable "ec2messages_endpoint" {
   type = object({
     private_dns_enabled = bool
@@ -151,6 +161,10 @@ variable "private_dynamodb_endpoint" {
   description = "Deploy a DynamoDB endpoint for your private subnets"
 }
 
+variable "private_ecr_dkr_endpoint" {
+  default     = false
+  description = "Deploy a ECR endpoint for your private subnets"
+}
 variable "private_s3_endpoint" {
   default     = false
   description = "Deploy an S3 endpoint for your private subnets"
